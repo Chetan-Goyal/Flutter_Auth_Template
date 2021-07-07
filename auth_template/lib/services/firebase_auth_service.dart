@@ -19,11 +19,6 @@ class FirebaseAuthService {
     return _firebaseAuth.authStateChanges().map(_userFromFirebase);
   }
 
-  Future<CurrentUser?> signInAnonymously() async {
-    final authResult = await _firebaseAuth.signInAnonymously();
-    return _userFromFirebase(authResult.user);
-  }
-
   Future<void> signOut() async {
     return await _firebaseAuth.signOut();
   }
