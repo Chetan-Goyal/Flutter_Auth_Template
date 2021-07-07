@@ -5,10 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:email_validator/email_validator.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
+  @override
+  _SignUpPageState createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
+  bool _hidePassword = true;
 
   final emailController = TextEditingController();
+
   final passwordController = TextEditingController();
 
   Future<void> _signUpGoogle(BuildContext context) async {
@@ -74,8 +81,18 @@ class SignUpPage extends StatelessWidget {
                 fillColor: Colors.grey,
                 focusColor: Colors.grey,
                 hintText: "Password",
+                suffixIcon: Padding(
+                  padding: EdgeInsets.only(top: 15.0),
+                  child: InkWell(
+                    onTap: _togglePasswordView,
+                    child: Icon(_hidePassword
+                        ? Icons.visibility
+                        : Icons.visibility_off),
+                  ),
+                ),
               ),
               validator: passValidator,
+              obscureText: _hidePassword,
             ),
             SizedBox(height: 30),
             ElevatedButton(
@@ -154,5 +171,11 @@ class SignUpPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _togglePasswordView() {
+    setState(() {
+      _hidePassword = !_hidePassword;
+    });
   }
 }

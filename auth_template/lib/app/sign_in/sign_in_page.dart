@@ -5,8 +5,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
   final _signInFormKey = GlobalKey<FormState>();
+  bool _hidePassword = true;
 
   final emailController = TextEditingController();
 
@@ -72,11 +78,20 @@ class SignInPage extends StatelessWidget {
             TextFormField(
               controller: passwordController,
               decoration: InputDecoration(
-                fillColor: Colors.grey,
-                focusColor: Colors.grey,
-                hintText: "Password",
-              ),
+                  fillColor: Colors.grey,
+                  focusColor: Colors.grey,
+                  hintText: "Password",
+                  suffixIcon: Padding(
+                    padding: EdgeInsets.only(top: 15.0),
+                    child: InkWell(
+                      onTap: _togglePasswordView,
+                      child: Icon(_hidePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                    ),
+                  )),
               validator: passValidator,
+              obscureText: _hidePassword,
             ),
             SizedBox(height: 30),
             ElevatedButton(
@@ -155,5 +170,11 @@ class SignInPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _togglePasswordView() {
+    setState(() {
+      _hidePassword = !_hidePassword;
+    });
   }
 }
