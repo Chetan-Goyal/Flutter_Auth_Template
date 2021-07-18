@@ -1,6 +1,7 @@
 import 'package:auth_template/services/firebase_auth_service.dart';
 import 'package:auth_template/services/firebase_storage_service.dart';
 import 'package:auth_template/services/firestore_service.dart';
+import 'package:auth_template/models/auth_state_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,12 +17,29 @@ class AuthWidgetBuilder extends StatelessWidget {
     print('AuthWidgetBuilder rebuild');
     final authService =
         Provider.of<FirebaseAuthService>(context, listen: false);
+    final authStateHandler = Provider.of<AuthHandler>(context, listen: false);
     return StreamBuilder<CurrentUser?>(
       stream: authService.onAuthStateChanged,
       builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          authStateHandler.value = authState.Initialised;
+        }
         print('StreamBuilder: ${snapshot.connectionState}');
+        print('authStateHandler: ${authStateHandler.getState}');
         final CurrentUser? user = snapshot.data;
-        if (user != null) {
+
+        if (authStateHandler.getState == authState.Uninitialised) {
+          return MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+        if (user != null && authStateHandler.value == authState.GoogleSignIn) {
+          // return add_password_page(user.uid);
+        } else if (user != null) {
           return MultiProvider(
             providers: [
               Provider<CurrentUser>.value(value: user),

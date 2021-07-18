@@ -1,5 +1,6 @@
 import 'package:auth_template/app/auth_widget.dart';
 import 'package:auth_template/app/auth_widget_builder.dart';
+import 'package:auth_template/models/auth_state_handler.dart';
 import 'package:auth_template/services/firebase_auth_service.dart';
 import 'package:auth_template/services/image_picker_service.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,9 @@ class MyApp extends StatelessWidget {
             providers: [
               Provider<FirebaseAuthService>(
                 create: (_) => FirebaseAuthService(),
+              ),
+              Provider<AuthHandler>(
+                create: (_) => AuthHandler(authState.Uninitialised),
               ),
               Provider<ImagePickerService>(
                 create: (_) => ImagePickerService(),
