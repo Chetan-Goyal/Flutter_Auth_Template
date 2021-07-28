@@ -7,11 +7,12 @@ import 'package:auth_template/models/auth_state_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'home/home_page.dart';
+
 /// Used to create user-dependant objects that need to be accessible by all widgets.
 /// This widget should live above the [MaterialApp].
 class AuthWidgetBuilder extends StatelessWidget {
-  const AuthWidgetBuilder({Key? key, required this.builder}) : super(key: key);
-  final Widget Function(BuildContext, AsyncSnapshot<CurrentUser?>) builder;
+  const AuthWidgetBuilder({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +36,7 @@ class AuthWidgetBuilder extends StatelessWidget {
             ),
           );
         }
+        print("user is $user");
         if (user == null) {
           return MaterialApp(home: SignUpPage());
         } else if (authService.isPassAdded()) {
@@ -48,8 +50,12 @@ class AuthWidgetBuilder extends StatelessWidget {
                 create: (_) => FirebaseStorageService(uid: user.uid),
               ),
             ],
-            // Maybe Builder could be needed here for accessing provider in Home
-            child: builder(context, snapshot),
+            child: MaterialApp(
+              theme: ThemeData(primarySwatch: Colors.indigo),
+              home: HomePage(
+                key: key,
+              ),
+            ),
           );
         } else {
           return AddPasswordPage(uid: user.uid);

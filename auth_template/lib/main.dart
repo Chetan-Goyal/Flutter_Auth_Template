@@ -1,4 +1,3 @@
-import 'package:auth_template/app/auth_widget.dart';
 import 'package:auth_template/app/auth_widget_builder.dart';
 import 'package:auth_template/models/auth_state_handler.dart';
 import 'package:auth_template/services/firebase_auth_service.dart';
@@ -22,24 +21,17 @@ class MyApp extends StatelessWidget {
         }
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return MultiProvider(
-              providers: [
-                Provider<FirebaseAuthService>(
-                  create: (_) => FirebaseAuthService(),
-                ),
-                ChangeNotifierProvider<AuthHandler>(
-                  create: (_) => AuthHandler(authState.Uninitialised),
-                ),
-                Provider<ImagePickerService>(
-                  create: (_) => ImagePickerService(),
-                ),
-              ],
-              child: AuthWidgetBuilder(builder: (context, userSnapshot) {
-                return MaterialApp(
-                  theme: ThemeData(primarySwatch: Colors.indigo),
-                  home: AuthWidget(userSnapshot: userSnapshot),
-                );
-              })
+          return MultiProvider(providers: [
+            Provider<FirebaseAuthService>(
+              create: (_) => FirebaseAuthService(),
+            ),
+            ChangeNotifierProvider<AuthHandler>(
+              create: (_) => AuthHandler(authState.Uninitialised),
+            ),
+            Provider<ImagePickerService>(
+              create: (_) => ImagePickerService(),
+            ),
+          ], child: AuthWidgetBuilder()
               // },
               );
         }
