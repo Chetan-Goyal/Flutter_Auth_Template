@@ -23,9 +23,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  Future<Map<String, dynamic>> _signUpGoogle(BuildContext context) async {
+  Future<bool> _signUpGoogle(BuildContext context) async {
     final auth = Provider.of<FirebaseAuthService>(context, listen: false);
-    final Map<String, dynamic> resp = await auth.signInWithGoogle();
+    final bool resp = await auth.signInWithGoogle();
     return resp;
   }
 
@@ -106,15 +106,21 @@ class _SignUpPageState extends State<SignUpPage> {
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState?.validate() == true) {
-                        _status = Status.Loading;
-                        _signUpEmail(context).then((res) {
-                          if (res["success"]) {
-                            _status = Status.Success;
-                            authStateHandler.value = authState.LoggedIn;
-                          } else {
-                            // TODO: Message on top of this login page
-                            _status = Status.Failure;
-                          }
+                        setState(() {
+                          _status = Status.Loading;
+                          _signUpEmail(context).then((res) {
+                            if (res["success"]) {
+                              setState(() {
+                                _status = Status.Success;
+                                authStateHandler.value = authState.LoggedIn;
+                              });
+                            } else {
+                              // TODO: Message on top of this login page
+                              setState(() {
+                                _status = Status.Failure;
+                              });
+                            }
+                          });
                         });
                       }
                     },
@@ -152,17 +158,15 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      _status = Status.Loading;
-                      _signUpGoogle(context).then((resp) {
-                        if (!resp["success"]) {
-                          _status = Status.Failure;
-                        } else if (resp["message"] == "PASS_ADDED") {
-                          _status = Status.Success;
-                          authStateHandler.value = authState.LoggedIn;
-                        } else {
-                          _status = Status.Failure;
-                          authStateHandler.value = authState.GoogleSignIn;
-                        }
+                      setState(() {
+                        _status = Status.Loading;
+                        _signUpGoogle(context).then((resp) {
+                          if (resp) {
+                            // successful google sign in
+                          } else {
+                            // unsuccessful google sign in
+                          }
+                        });
                       });
                     },
                     child: Text(

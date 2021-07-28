@@ -1,8 +1,17 @@
 // TODO: add listen in auth widget builder
 
-enum authState { Uninitialised, Initialised, LoggedIn, GoogleSignIn, LoggedOut }
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class AuthHandler {
+enum authState {
+  Uninitialised,
+  Initialised,
+  LoggedIn,
+  GoogleSignIn,
+  LoggedOut,
+}
+
+class AuthHandler extends ChangeNotifier {
   authState value;
   AuthHandler(this.value);
 
@@ -10,7 +19,8 @@ class AuthHandler {
     return value;
   }
 
-  set setState(val) {
+  set setAuthState(val) {
     this.value = val;
+    notifyListeners();
   }
 }

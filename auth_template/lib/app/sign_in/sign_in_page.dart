@@ -21,9 +21,9 @@ class _SignInPageState extends State<SignInPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  Future<Map<String, dynamic>> _signInGoogle(BuildContext context) async {
+  Future<bool> _signInGoogle(BuildContext context) async {
     final auth = Provider.of<FirebaseAuthService>(context, listen: false);
-    final Map<String, dynamic> resp = await auth.signInWithGoogle();
+    final bool resp = await auth.signInWithGoogle();
     return resp;
   }
 
@@ -150,14 +150,10 @@ class _SignInPageState extends State<SignInPage> {
                     onPressed: () {
                       _status = Status.Loading;
                       _signInGoogle(context).then((resp) {
-                        if (!resp["success"]) {
-                          _status = Status.Failure;
-                        } else if (resp["message"] == "PASS_ADDED") {
-                          _status = Status.Success;
-                          authStateHandler.value = authState.LoggedIn;
+                        if (resp) {
+                          // successful google sign in
                         } else {
-                          _status = Status.Failure;
-                          authStateHandler.value = authState.GoogleSignIn;
+                          // unsuccessful google sign in
                         }
                       });
                     },

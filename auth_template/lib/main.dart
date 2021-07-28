@@ -20,28 +20,28 @@ class MyApp extends StatelessWidget {
         if (snapshot.hasError) {
           return Container();
         }
-
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           return MultiProvider(
-            providers: [
-              Provider<FirebaseAuthService>(
-                create: (_) => FirebaseAuthService(),
-              ),
-              Provider<AuthHandler>(
-                create: (_) => AuthHandler(authState.Uninitialised),
-              ),
-              Provider<ImagePickerService>(
-                create: (_) => ImagePickerService(),
-              ),
-            ],
-            child: AuthWidgetBuilder(builder: (context, userSnapshot) {
-              return MaterialApp(
-                theme: ThemeData(primarySwatch: Colors.indigo),
-                home: AuthWidget(userSnapshot: userSnapshot),
+              providers: [
+                Provider<FirebaseAuthService>(
+                  create: (_) => FirebaseAuthService(),
+                ),
+                ChangeNotifierProvider<AuthHandler>(
+                  create: (_) => AuthHandler(authState.Uninitialised),
+                ),
+                Provider<ImagePickerService>(
+                  create: (_) => ImagePickerService(),
+                ),
+              ],
+              child: AuthWidgetBuilder(builder: (context, userSnapshot) {
+                return MaterialApp(
+                  theme: ThemeData(primarySwatch: Colors.indigo),
+                  home: AuthWidget(userSnapshot: userSnapshot),
+                );
+              })
+              // },
               );
-            }),
-          );
         }
 
         // Otherwise, show something whilst waiting for initialization to complete

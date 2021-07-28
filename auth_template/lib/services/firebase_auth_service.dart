@@ -1,3 +1,4 @@
+import 'package:auth_template/app/add_password/add_password_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
@@ -20,14 +21,14 @@ class FirebaseAuthService {
   }
 
   Stream<CurrentUser?> get onAuthStateChanged {
-    return _firebaseAuth.authStateChanges().map(_userFromFirebase);
+    return _firebaseAuth.userChanges().map(_userFromFirebase);
   }
 
   Future<void> signOut() async {
     return await _firebaseAuth.signOut();
   }
 
-  Future<Map<String, dynamic>> signInWithGoogle() async {
+  Future<bool> signInWithGoogle() async {
     GoogleSignIn _googleSignIn = GoogleSignIn();
     try {
       final googleSignInAccount = await _googleSignIn.signIn();
@@ -39,11 +40,9 @@ class FirebaseAuthService {
       );
       final authResult = await _firebaseAuth.signInWithCredential(credential);
       _userFromFirebase(authResult.user);
-      if (authResult.user?.providerData.length == 1) {
-        return {"success": true, "message": "PASS_ADDED"};
-      } else {
-        return {"success": true, "message": "PASS_NOT_ADDED"};
-      }
+
+      return true;
+
       // await _firebaseAuth.createUserWithEmailAndPassword(
       //     email: authResult.user!.email.toString(), password: "password");
       // print("MESSAGE: Google Sign In Completed");
@@ -51,7 +50,7 @@ class FirebaseAuthService {
     } catch (error) {
       print("MESSAGE: GOT ERROR IN Google Sign In");
       print(error);
-      return {"success": false};
+      return false;
     }
   }
 
@@ -67,8 +66,22 @@ class FirebaseAuthService {
     return _userFromFirebase(authResult.user);
   }
 
-  // Future<CurrentUser?> addPassword({email, password}) async {
-  //   final authResult = await _firebaseAuth.currentUser?.updatePassword(password);
-  //   return _userFromFirebase(authResult.user);
-  // }
+  Future<bool> addPassword({required password}) async {
+    try {
+      await _firebaseAuth.currentUser?.updatePassword(password);
+      print("addPassword Returning True");
+      return true;
+    } catch (exception) {
+      print("Exception $exception");
+    }
+    return false;
+  }
+
+  bool isPassAdded() {
+    if (FirebaseAuth.instance.currentUser != null &&
+        FirebaseAuth.instance.currentUser?.providerData.length == 2) {
+      return true;
+    }
+    return false;
+  }
 }

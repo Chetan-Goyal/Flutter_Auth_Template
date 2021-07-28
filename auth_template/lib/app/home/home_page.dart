@@ -13,6 +13,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
+  // HomePage({Key key})
+
   Future<void> _signOut(BuildContext context) async {
     try {
       final auth = Provider.of<FirebaseAuthService>(context, listen: false);
@@ -57,6 +60,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("HomePage build");
+    // print(context.owner.);
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
@@ -90,10 +95,11 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildUserInfo({required BuildContext context}) {
+    // print
     final database = Provider.of<FirestoreService>(context, listen: false);
     return StreamBuilder<AvatarReference>(
       stream: database.avatarReferenceStream(),
-      builder: (context, snapshot) {
+      builder: (_, snapshot) {
         final avatarReference = snapshot.data;
         return Avatar(
           photoUrl: avatarReference?.downloadUrl,
