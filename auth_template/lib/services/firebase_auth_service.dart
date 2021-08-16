@@ -72,16 +72,17 @@ class FirebaseAuthService {
       print("addPassword Returning True");
       return true;
     } catch (exception) {
-      print("Exception $exception");
+      if (!exception.toString().contains("requires-recent-login"))
+        await signOut();
+      print("Exception ${exception}");
     }
     return false;
   }
 
   bool isPassAdded() {
-    if (FirebaseAuth.instance.currentUser != null &&
-        FirebaseAuth.instance.currentUser?.providerData.length == 2) {
-      return true;
-    }
+    if (FirebaseAuth.instance.currentUser != null)
+      for (UserInfo providerData in FirebaseAuth.instance.currentUser!
+          .providerData) if (providerData.providerId == "password") return true;
     return false;
   }
 }

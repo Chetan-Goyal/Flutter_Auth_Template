@@ -1,7 +1,6 @@
 // TODO: add listen in auth widget builder
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 enum authState {
   Uninitialised,
